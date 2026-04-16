@@ -1,0 +1,27 @@
+
+{% extends "hiring/base.html" %}
+{% block title %}Employer Dashboard — GLH{% endblock %}
+{% block page_title %}Employer <span>Hub</span>{% endblock %}
+{% block sidebar %}
+<a class="active" href="{% url 'employer_dashboard' %}"><i class="bi bi-grid-1x2"></i> Dashboard</a>
+<div class="sb-section">Jobs</div>
+<a href="{% url 'employer_add_job' %}"><i class="bi bi-plus-circle"></i> Post Job</a>
+<a href="{% url 'employer_view_jobs' %}"><i class="bi bi-briefcase"></i> My Jobs</a>
+<div class="sb-section">Applications</div>
+<a href="{% url 'employer_view_applications' %}"><i class="bi bi-file-earmark-person"></i> Applications</a>
+{% endblock %}
+{% block content %}
+<div class="page-hdr fu">
+  <div><h1>Employer <span>Hub</span></h1><p>Job management and applicant tracking</p></div>
+  <a href="{% url 'employer_add_job' %}" class="btn btn-gold"><i class="bi bi-plus-circle"></i> Post Job</a>
+</div>
+<div class="stats-grid">
+  <div class="stat-card fu fu1"><i class="bi bi-briefcase stat-icon"></i><span class="stat-num">{{ jobs }}</span><div class="stat-label">Job Postings</div></div>
+  <div class="stat-card fu fu2"><i class="bi bi-clock stat-icon"></i><span class="stat-num blue">{{ pending }}</span><div class="stat-label">Pending Applications</div></div>
+  <div class="stat-card fu fu3"><i class="bi bi-person-check stat-icon"></i><span class="stat-num green">{{ hired }}</span><div class="stat-label">Hired Workers</div></div>
+</div>
+<div style="display:flex;gap:12px;" class="fu">
+  <a href="{% url 'employer_add_job' %}" class="btn btn-gold"><i class="bi bi-plus-circle"></i> Post New Job</a>
+  <a href="{% url 'employer_view_applications' %}" class="btn btn-outline"><i class="bi bi-list-check"></i> Review Applications</a>
+</div>
+{% endblock %}

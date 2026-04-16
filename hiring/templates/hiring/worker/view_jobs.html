@@ -1,0 +1,40 @@
+{% extends "hiring/base.html" %}
+{% block title %}Browse Jobs{% endblock %}
+{% block page_title %}Browse Jobs{% endblock %}
+{% block sidebar %}
+<a href="{% url 'worker_dashboard' %}"><i class="bi bi-speedometer2"></i> Overview</a>
+<div class="nav-label">My Account</div>
+<a href="{% url 'worker_profile' %}"><i class="bi bi-person"></i> My Profile</a>
+<a href="{% url 'worker_noc_status' %}"><i class="bi bi-shield-check"></i> NOC Status</a>
+<div class="nav-label">Jobs</div>
+<a href="{% url 'worker_view_jobs' %}" class="active"><i class="bi bi-briefcase"></i> Browse Jobs</a>
+<a href="{% url 'worker_application_status' %}"><i class="bi bi-list-check"></i> My Applications</a>
+<div class="nav-label">Other</div>
+<a href="{% url 'worker_feedback' %}"><i class="bi bi-chat-dots"></i> Feedback</a>
+{% endblock %}
+{% block content %}
+<div class="page-header fade-up"><div><h1>Available Jobs</h1><p>Jobs you haven't applied to yet.</p></div></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;" class="fade-up">
+{% for j in jobs %}
+<div class="card" style="transition:all 0.3s;" onmouseover="this.style.transform='translateY(-4px)';this.style.borderColor='rgba(79,142,255,0.3)'" onmouseout="this.style.transform='';this.style.borderColor='var(--border)'">
+  <div class="card-body">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;">
+      <div>
+        <h3 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;color:var(--text);margin-bottom:4px;">{{ j.job_name }}</h3>
+        <span style="font-size:0.75rem;color:var(--text3);">{{ j.job_type }}</span>
+      </div>
+      <span style="font-family:'Syne',sans-serif;font-weight:700;color:var(--accent3);font-size:0.95rem;">₹{{ j.salary }}</span>
+    </div>
+    <p style="font-size:0.82rem;color:var(--text2);margin-bottom:16px;line-height:1.5;">{{ j.description|truncatechars:80 }}</p>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;">
+      <span style="font-size:0.72rem;background:rgba(79,142,255,0.1);color:var(--accent);border:1px solid rgba(79,142,255,0.2);padding:3px 8px;border-radius:4px;"><i class="bi bi-people"></i> {{ j.vacancy }} vacancies</span>
+      <span style="font-size:0.72rem;background:rgba(255,255,255,0.05);color:var(--text3);border:1px solid var(--border);padding:3px 8px;border-radius:4px;"><i class="bi bi-building"></i> {{ j.contractor.name }}</span>
+    </div>
+    <a href="{% url 'worker_apply_job' j.jid %}" class="btn btn-primary" style="width:100%;justify-content:center;" onclick="return confirm('Apply for {{ j.job_name }}?')"><i class="bi bi-send"></i> Apply Now</a>
+  </div>
+</div>
+{% empty %}
+<div style="grid-column:1/-1;"><div class="empty-state"><i class="bi bi-briefcase"></i><p>No new jobs available at the moment.</p></div></div>
+{% endfor %}
+</div>
+{% endblock %}

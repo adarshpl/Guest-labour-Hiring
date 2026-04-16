@@ -1,0 +1,42 @@
+
+{% extends "hiring/base.html" %}
+{% block title %}NOC Status — GLH{% endblock %}
+{% block page_title %}NOC <span>Status</span>{% endblock %}
+{% block sidebar %}
+<a href="{% url 'worker_dashboard' %}"><i class="bi bi-grid-1x2"></i> Dashboard</a>
+<div class="sb-section">Profile</div>
+<a href="{% url 'worker_profile' %}"><i class="bi bi-person-badge"></i> My Profile</a>
+<a class="active" href="{% url 'worker_noc_status' %}"><i class="bi bi-shield-check"></i> NOC Status</a>
+<div class="sb-section">Jobs</div>
+<a href="{% url 'worker_view_jobs' %}"><i class="bi bi-briefcase"></i> Browse Jobs</a>
+<a href="{% url 'worker_application_status' %}"><i class="bi bi-file-earmark-text"></i> My Applications</a>
+<div class="sb-section">Support</div>
+<a href="{% url 'worker_feedback' %}"><i class="bi bi-chat-dots"></i> Send Feedback</a>
+{% endblock %}
+{% block content %}
+<div class="page-hdr fu"><div><h1>NOC <span>Status</span></h1><p>Your No Objection Certificate verification status</p></div></div>
+<div class="card fu" style="max-width:460px;margin:0 auto;">
+  <div class="card-body" style="text-align:center;padding:60px 32px;">
+    {% if noc %}
+      {% if noc.status == 'Approved' %}
+        <div style="width:80px;height:80px;background:rgba(72,199,142,.1);border:2px solid rgba(72,199,142,.3);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 22px;"><i class="bi bi-shield-check" style="font-size:2rem;color:#48c78e;"></i></div>
+        <div style="font-family:'Bebas Neue';font-size:2.2rem;letter-spacing:.1em;color:#48c78e;margin-bottom:8px;">Approved</div>
+        <div style="font-size:.88rem;color:var(--mist);margin-bottom:20px;">You are cleared for employment</div>
+      {% elif noc.status == 'Rejected' %}
+        <div style="width:80px;height:80px;background:rgba(255,95,95,.1);border:2px solid rgba(255,95,95,.3);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 22px;"><i class="bi bi-shield-x" style="font-size:2rem;color:#ff5f5f;"></i></div>
+        <div style="font-family:'Bebas Neue';font-size:2.2rem;letter-spacing:.1em;color:#ff5f5f;margin-bottom:8px;">Rejected</div>
+        <div style="font-size:.88rem;color:var(--mist);margin-bottom:20px;">NOC application was denied</div>
+      {% else %}
+        <div style="width:80px;height:80px;background:rgba(212,168,75,.07);border:2px solid rgba(212,168,75,.25);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 22px;"><i class="bi bi-hourglass-split" style="font-size:2rem;color:var(--gold);"></i></div>
+        <div style="font-family:'Bebas Neue';font-size:2.2rem;letter-spacing:.1em;color:var(--gold);margin-bottom:8px;">Under Review</div>
+        <div style="font-size:.88rem;color:var(--mist);margin-bottom:20px;">Awaiting police verification</div>
+      {% endif %}
+      {% if noc.remarks %}<div style="background:rgba(255,255,255,.03);border:1px solid var(--wire);border-radius:10px;padding:16px;font-size:.85rem;color:var(--mist);text-align:left;border-left:2px solid rgba(212,168,75,.3);">{{ noc.remarks }}</div>{% endif %}
+    {% else %}
+      <div style="width:80px;height:80px;background:rgba(255,255,255,.03);border:1px solid var(--wire);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 22px;"><i class="bi bi-shield" style="font-size:2rem;color:var(--mist);opacity:.4;"></i></div>
+      <div style="font-family:'Bebas Neue';font-size:1.8rem;color:var(--mist);">Not Initiated</div>
+      <div style="font-size:.85rem;color:var(--mist);margin-top:8px;opacity:.6;">Police verification has not started</div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

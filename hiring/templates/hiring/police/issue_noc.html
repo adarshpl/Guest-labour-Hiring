@@ -1,0 +1,47 @@
+{% extends "hiring/base.html" %}
+{% block title %}Issue NOC{% endblock %}
+{% block page_title %}Issue NOC{% endblock %}
+{% block sidebar %}
+<a href="{% url 'police_dashboard' %}"><i class="bi bi-speedometer2"></i> Overview</a>
+<div class="nav-label">Verification</div>
+<a href="{% url 'police_view_workers' %}" class="active"><i class="bi bi-people"></i> View Workers</a>
+<a href="{% url 'police_view_nocs' %}"><i class="bi bi-file-earmark-check"></i> Issued NOCs</a>
+{% endblock %}
+{% block content %}
+<div class="page-header fade-up">
+  <div><h1>Issue NOC</h1><p>Review worker details and issue a No Objection Certificate.</p></div>
+  <a href="{% url 'police_view_workers' %}" class="btn btn-ghost"><i class="bi bi-arrow-left"></i> Back</a>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;" class="fade-up">
+  <div class="card">
+    <div class="card-header"><span class="card-title"><i class="bi bi-person" style="color:var(--accent);margin-right:8px;"></i>Worker Profile</span></div>
+    <div class="card-body">
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        {% for label, val in worker.name|zip_with_labels %}{% endfor %}
+        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);"><span style="font-size:0.8rem;color:var(--text3);">Name</span><span style="font-size:0.875rem;color:var(--text);font-weight:500;">{{ worker.name }}</span></div>
+        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);"><span style="font-size:0.8rem;color:var(--text3);">Phone</span><span style="font-size:0.875rem;color:var(--text2);">{{ worker.phone }}</span></div>
+        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);"><span style="font-size:0.8rem;color:var(--text3);">Email</span><span style="font-size:0.875rem;color:var(--text2);">{{ worker.email }}</span></div>
+        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);"><span style="font-size:0.8rem;color:var(--text3);">Aadhaar</span><span style="font-family:monospace;font-size:0.8rem;color:var(--text2);">{{ worker.aadhaar_number }}</span></div>
+        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);"><span style="font-size:0.8rem;color:var(--text3);">DOB</span><span style="font-size:0.875rem;color:var(--text2);">{{ worker.date_of_birth }}</span></div>
+        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);"><span style="font-size:0.8rem;color:var(--text3);">Gender</span><span style="font-size:0.875rem;color:var(--text2);">{{ worker.gender }}</span></div>
+        <div style="display:flex;justify-content:space-between;padding:8px 0;"><span style="font-size:0.8rem;color:var(--text3);">Languages</span><span style="font-size:0.875rem;color:var(--text2);">{{ worker.languages_known }}</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title"><i class="bi bi-shield-check" style="color:var(--accent3);margin-right:8px;"></i>NOC Decision</span>
+      <span class="badge badge-{{ noc.status|lower }}">{{ noc.status }}</span>
+    </div>
+    <div class="card-body">
+      <form method="post">{% csrf_token %}
+        <div class="form-group" style="margin-bottom:20px;"><label class="form-label">Remarks / Notes</label>{{ form.remarks }}</div>
+        <div style="display:flex;gap:12px;">
+          <button type="submit" name="action" value="approve" class="btn btn-success" style="flex:1;justify-content:center;"><i class="bi bi-check-circle"></i> Approve NOC</button>
+          <button type="submit" name="action" value="reject" class="btn btn-danger" style="flex:1;justify-content:center;"><i class="bi bi-x-circle"></i> Reject NOC</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

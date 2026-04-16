@@ -1,0 +1,40 @@
+{% extends "hiring/base.html" %}
+{% block title %}Worker Applications{% endblock %}
+{% block page_title %}<i class="bi bi-file-earmark-person me-2"></i>Worker Applications{% endblock %}
+{% block sidebar %}
+<a href="{% url 'employer_dashboard' %}"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a>
+<a href="{% url 'employer_add_job' %}"><i class="bi bi-plus-circle me-2"></i>Post Job</a>
+<a href="{% url 'employer_view_jobs' %}"><i class="bi bi-briefcase me-2"></i>My Jobs</a>
+<a href="{% url 'employer_view_applications' %}" class="active"><i class="bi bi-file-earmark-person me-2"></i>Applications</a>
+{% endblock %}
+{% block content %}
+<div class="card border-0 shadow-sm">
+  <div class="table-responsive">
+    <table class="table table-hover mb-0">
+      <thead><tr><th>#</th><th>Worker</th><th>Job</th><th>NOC</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody>
+      {% for a in applications %}
+      <tr>
+        <td>{{ a.rqid }}</td>
+        <td>{{ a.worker.name }}</td>
+        <td>{{ a.job.job_name }}</td>
+        <td>
+          {% if a.worker.noc %}
+            <span class="badge badge-{{ a.worker.noc.status|lower }} px-2 py-1">{{ a.worker.noc.status }}</span>
+            <a href="{% url 'employer_view_worker_noc' a.worker.wid %}" class="btn btn-outline-secondary btn-sm ms-1">View</a>
+          {% else %}—{% endif %}
+        </td>
+        <td><span class="badge badge-{{ a.status|lower }} px-2 py-1">{{ a.status }}</span></td>
+        <td>
+          {% if a.status == 'Pending' %}
+          <a href="{% url 'employer_action_request' a.rqid 'approve' %}" class="btn btn-success btn-sm me-1">Accept</a>
+          <a href="{% url 'employer_action_request' a.rqid 'reject' %}" class="btn btn-danger btn-sm">Reject</a>
+          {% else %}<span class="text-muted small">Done</span>{% endif %}
+        </td>
+      </tr>
+      {% empty %}<tr><td colspan="6" class="text-center text-muted py-4">No applications yet.</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

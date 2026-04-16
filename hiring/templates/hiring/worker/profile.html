@@ -1,0 +1,36 @@
+{% extends "hiring/base.html" %}
+{% block title %}My Profile{% endblock %}
+{% block page_title %}My Profile{% endblock %}
+{% block sidebar %}
+<a href="{% url 'worker_dashboard' %}"><i class="bi bi-speedometer2"></i> Overview</a>
+<div class="nav-label">My Account</div>
+<a href="{% url 'worker_profile' %}" class="active"><i class="bi bi-person"></i> My Profile</a>
+<a href="{% url 'worker_noc_status' %}"><i class="bi bi-shield-check"></i> NOC Status</a>
+<div class="nav-label">Jobs</div>
+<a href="{% url 'worker_view_jobs' %}"><i class="bi bi-briefcase"></i> Browse Jobs</a>
+<a href="{% url 'worker_application_status' %}"><i class="bi bi-list-check"></i> My Applications</a>
+<div class="nav-label">Other</div>
+<a href="{% url 'worker_feedback' %}"><i class="bi bi-chat-dots"></i> Feedback</a>
+{% endblock %}
+{% block content %}
+<div class="page-header fade-up"><div><h1>My Profile</h1><p>Your personal information on record.</p></div></div>
+<div class="card fade-up" style="max-width:600px;">
+  <div class="card-header">
+    <span class="card-title">Personal Information</span>
+    <div style="width:44px;height:44px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;color:#fff;">{{ worker.name|slice:":1"|upper }}</div>
+  </div>
+  <div class="card-body">
+    <div style="display:flex;flex-direction:column;gap:0;">
+      {% for lbl, val in worker|profile_fields %}{% endfor %}
+      <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border);"><span style="font-size:0.8rem;color:var(--text3);width:140px;flex-shrink:0;">Full Name</span><span style="font-size:0.875rem;color:var(--text);font-weight:500;">{{ worker.name }}</span></div>
+      <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border);"><span style="font-size:0.8rem;color:var(--text3);width:140px;flex-shrink:0;">Date of Birth</span><span style="font-size:0.875rem;color:var(--text2);">{{ worker.date_of_birth }}</span></div>
+      <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border);"><span style="font-size:0.8rem;color:var(--text3);width:140px;flex-shrink:0;">Gender</span><span style="font-size:0.875rem;color:var(--text2);">{{ worker.gender }}</span></div>
+      <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border);"><span style="font-size:0.8rem;color:var(--text3);width:140px;flex-shrink:0;">Phone</span><span style="font-size:0.875rem;color:var(--text2);">{{ worker.phone }}</span></div>
+      <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border);"><span style="font-size:0.8rem;color:var(--text3);width:140px;flex-shrink:0;">Email</span><span style="font-size:0.875rem;color:var(--text2);">{{ worker.email }}</span></div>
+      <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border);"><span style="font-size:0.8rem;color:var(--text3);width:140px;flex-shrink:0;">Aadhaar No.</span><span style="font-family:monospace;font-size:0.8rem;color:var(--text2);">{{ worker.aadhaar_number }}</span></div>
+      <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border);"><span style="font-size:0.8rem;color:var(--text3);width:140px;flex-shrink:0;">Languages</span><span style="font-size:0.875rem;color:var(--text2);">{{ worker.languages_known }}</span></div>
+      <div style="display:flex;justify-content:space-between;padding:12px 0;"><span style="font-size:0.8rem;color:var(--text3);width:140px;flex-shrink:0;">Address</span><span style="font-size:0.875rem;color:var(--text2);">{{ worker.address }}</span></div>
+    </div>
+  </div>
+</div>
+{% endblock %}

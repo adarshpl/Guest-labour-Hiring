@@ -1,0 +1,35 @@
+{% extends "hiring/base.html" %}
+{% block title %}Post Job{% endblock %}
+{% block page_title %}Post Job{% endblock %}
+{% block sidebar %}
+<a href="{% url 'employer_dashboard' %}"><i class="bi bi-speedometer2"></i> Overview</a>
+<div class="nav-label">Jobs</div>
+<a href="{% url 'employer_add_job' %}" class="active"><i class="bi bi-plus-circle"></i> Post Job</a>
+<a href="{% url 'employer_view_jobs' %}"><i class="bi bi-briefcase"></i> My Jobs</a>
+<div class="nav-label">Applications</div>
+<a href="{% url 'employer_view_applications' %}"><i class="bi bi-file-earmark-person"></i> Applications</a>
+{% endblock %}
+{% block content %}
+<div class="page-header fade-up"><div><h1>Post New Job</h1><p>Create a job vacancy for workers to apply.</p></div>
+<a href="{% url 'employer_view_jobs' %}" class="btn btn-ghost"><i class="bi bi-arrow-left"></i> Back</a></div>
+<div class="card fade-up" style="max-width:680px;">
+  <div class="card-header"><span class="card-title"><i class="bi bi-briefcase" style="color:var(--accent);margin-right:8px;"></i>Job Details</span></div>
+  <div class="card-body">
+    <form method="post">{% csrf_token %}
+      <div class="form-grid">
+        <div class="form-group"><label class="form-label">Job Name</label>{{ form.job_name }}</div>
+        <div class="form-group"><label class="form-label">Job Type</label>{{ form.job_type }}</div>
+        <div class="form-group"><label class="form-label">Vacancies</label>{{ form.vacancy }}</div>
+        <div class="form-group"><label class="form-label">Experience Required</label>{{ form.experience }}</div>
+        <div class="form-group"><label class="form-label">Salary (₹)</label>{{ form.salary }}</div>
+        <div class="form-group"><label class="form-label">Qualification</label>{{ form.qualification }}</div>
+        <div class="form-group form-full"><label class="form-label">Job Description</label>{{ form.description }}</div>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary"><i class="bi bi-check-circle"></i> Post Job</button>
+        <a href="{% url 'employer_view_jobs' %}" class="btn btn-ghost">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

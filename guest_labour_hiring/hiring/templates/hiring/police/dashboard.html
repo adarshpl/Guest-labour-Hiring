@@ -1,0 +1,23 @@
+
+{% extends "hiring/base.html" %}
+{% block title %}Police Dashboard — GLH{% endblock %}
+{% block page_title %}Police <span>Command</span>{% endblock %}
+{% block sidebar %}
+<a class="active" href="{% url 'police_dashboard' %}"><i class="bi bi-shield-lock"></i> Dashboard</a>
+<div class="sb-section">Verification</div>
+<a href="{% url 'police_view_workers' %}"><i class="bi bi-people"></i> View Workers</a>
+<a href="{% url 'police_view_nocs' %}"><i class="bi bi-file-earmark-check"></i> Issued NOCs</a>
+{% endblock %}
+{% block content %}
+<div class="page-hdr fu"><div><h1>Police <span>Command</span></h1><p>Worker verification and NOC management interface</p></div></div>
+<div class="stats-grid">
+  <div class="stat-card fu fu1"><i class="bi bi-people stat-icon"></i><span class="stat-num">{{ total }}</span><div class="stat-label">Total Workers</div></div>
+  <div class="stat-card fu fu2"><i class="bi bi-clock stat-icon"></i><span class="stat-num blue">{{ pending }}</span><div class="stat-label">Pending NOC</div></div>
+  <div class="stat-card fu fu3"><i class="bi bi-check-circle stat-icon"></i><span class="stat-num green">{{ approved }}</span><div class="stat-label">Approved</div></div>
+  <div class="stat-card fu fu4"><i class="bi bi-x-circle stat-icon"></i><span class="stat-num red">{{ rejected }}</span><div class="stat-label">Rejected</div></div>
+</div>
+<div style="display:flex;gap:12px;" class="fu">
+  <a href="{% url 'police_view_workers' %}" class="btn btn-gold"><i class="bi bi-shield-check"></i> Verify Workers</a>
+  <a href="{% url 'police_view_nocs' %}" class="btn btn-outline"><i class="bi bi-file-earmark-check"></i> View All NOCs</a>
+</div>
+{% endblock %}

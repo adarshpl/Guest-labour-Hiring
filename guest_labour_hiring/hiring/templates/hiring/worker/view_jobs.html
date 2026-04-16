@@ -1,0 +1,39 @@
+
+{% extends "hiring/base.html" %}
+{% block title %}Browse Jobs — GLH{% endblock %}
+{% block page_title %}Browse <span>Jobs</span>{% endblock %}
+{% block sidebar %}
+<a href="{% url 'worker_dashboard' %}"><i class="bi bi-grid-1x2"></i> Dashboard</a>
+<div class="sb-section">Profile</div>
+<a href="{% url 'worker_profile' %}"><i class="bi bi-person-badge"></i> My Profile</a>
+<a href="{% url 'worker_noc_status' %}"><i class="bi bi-shield-check"></i> NOC Status</a>
+<div class="sb-section">Jobs</div>
+<a class="active" href="{% url 'worker_view_jobs' %}"><i class="bi bi-briefcase"></i> Browse Jobs</a>
+<a href="{% url 'worker_application_status' %}"><i class="bi bi-file-earmark-text"></i> My Applications</a>
+<div class="sb-section">Support</div>
+<a href="{% url 'worker_feedback' %}"><i class="bi bi-chat-dots"></i> Send Feedback</a>
+{% endblock %}
+{% block content %}
+<div class="page-hdr fu"><div><h1>Browse <span>Jobs</span></h1><p>Available vacancies — click Apply to submit your application</p></div></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;">
+{% for j in jobs %}
+<div class="card fu" style="transition:all .3s;border-radius:14px;" onmouseover="this.style.borderColor='rgba(212,168,75,.3)';this.style.transform='translateY(-3px)'" onmouseout="this.style.borderColor='var(--wire)';this.style.transform='none'">
+  <div class="card-hdr">
+    <div class="card-title"><i class="bi bi-briefcase"></i> {{ j.job_name }}</div>
+    <span style="font-family:'Bebas Neue';font-size:1.2rem;color:var(--gold);">₹{{ j.salary }}</span>
+  </div>
+  <div class="card-body">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">
+      <div style="background:rgba(255,255,255,.03);border:1px solid var(--wire);border-radius:8px;padding:10px;"><div style="font-size:.65rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--mist);margin-bottom:4px;">Type</div><div style="font-size:.85rem;color:var(--cream);">{{ j.job_type }}</div></div>
+      <div style="background:rgba(255,255,255,.03);border:1px solid var(--wire);border-radius:8px;padding:10px;"><div style="font-size:.65rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--mist);margin-bottom:4px;">Vacancies</div><div style="font-size:.85rem;color:var(--gold);font-family:'Bebas Neue';">{{ j.vacancy }}</div></div>
+      <div style="background:rgba(255,255,255,.03);border:1px solid var(--wire);border-radius:8px;padding:10px;"><div style="font-size:.65rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--mist);margin-bottom:4px;">Experience</div><div style="font-size:.85rem;color:var(--cream);">{{ j.experience }}</div></div>
+      <div style="background:rgba(255,255,255,.03);border:1px solid var(--wire);border-radius:8px;padding:10px;"><div style="font-size:.65rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--mist);margin-bottom:4px;">Qualification</div><div style="font-size:.78rem;color:var(--cream);">{{ j.qualification }}</div></div>
+    </div>
+    {% if j.description %}<p style="font-size:.85rem;color:var(--mist);line-height:1.6;margin-bottom:16px;border-left:2px solid rgba(212,168,75,.2);padding-left:12px;">{{ j.description|truncatechars:80 }}</p>{% endif %}
+    <a href="{% url 'worker_apply_job' j.jid %}" class="btn btn-gold" style="width:100%;justify-content:center;"><i class="bi bi-send"></i> Apply Now</a>
+  </div>
+</div>
+{% empty %}<div style="grid-column:1/-1;"><div class="empty"><i class="bi bi-briefcase"></i><p>No jobs available right now</p></div></div>
+{% endfor %}
+</div>
+{% endblock %}

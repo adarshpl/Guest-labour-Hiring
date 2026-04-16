@@ -1,0 +1,35 @@
+{% extends "hiring/base.html" %}
+{% block title %}Worker Dashboard{% endblock %}
+{% block page_title %}Worker Dashboard{% endblock %}
+{% block sidebar %}
+<a href="{% url 'worker_dashboard' %}" class="active"><i class="bi bi-speedometer2"></i> Overview</a>
+<div class="nav-label">My Account</div>
+<a href="{% url 'worker_profile' %}"><i class="bi bi-person"></i> My Profile</a>
+<a href="{% url 'worker_noc_status' %}"><i class="bi bi-shield-check"></i> NOC Status</a>
+<div class="nav-label">Jobs</div>
+<a href="{% url 'worker_view_jobs' %}"><i class="bi bi-briefcase"></i> Browse Jobs</a>
+<a href="{% url 'worker_application_status' %}"><i class="bi bi-list-check"></i> My Applications</a>
+<div class="nav-label">Other</div>
+<a href="{% url 'worker_feedback' %}"><i class="bi bi-chat-dots"></i> Feedback</a>
+{% endblock %}
+{% block content %}
+<div class="page-header fade-up">
+  <div><h1>Welcome, {{ worker.name }}</h1><p>Track your NOC status, browse jobs, and manage applications.</p></div>
+  <a href="{% url 'worker_view_jobs' %}" class="btn btn-primary"><i class="bi bi-briefcase"></i> Browse Jobs</a>
+</div>
+<div class="stats-grid">
+  <div class="stat-card blue fade-up fade-up-1"><div class="stat-icon"><i class="bi bi-file-earmark-text"></i></div><div class="stat-num">{{ applications }}</div><div class="stat-label">Applications Sent</div></div>
+  <div class="stat-card green fade-up fade-up-2"><div class="stat-icon"><i class="bi bi-check-circle"></i></div><div class="stat-num">{{ approved }}</div><div class="stat-label">Approved</div></div>
+  <div class="stat-card {% if worker.noc.status == 'Approved' %}green{% elif worker.noc.status == 'Rejected' %}red{% else %}amber{% endif %} fade-up fade-up-3">
+    <div class="stat-icon"><i class="bi bi-shield-check"></i></div>
+    <div class="stat-num" style="font-size:1.3rem;">{{ worker.noc.status|default:"Pending" }}</div>
+    <div class="stat-label">NOC Status</div>
+  </div>
+</div>
+<div style="display:flex;gap:12px;flex-wrap:wrap;" class="fade-up">
+  <a href="{% url 'worker_view_jobs' %}" class="btn btn-primary"><i class="bi bi-briefcase"></i> Browse Jobs</a>
+  <a href="{% url 'worker_application_status' %}" class="btn btn-ghost"><i class="bi bi-list-check"></i> My Applications</a>
+  <a href="{% url 'worker_noc_status' %}" class="btn btn-ghost"><i class="bi bi-shield-check"></i> NOC Status</a>
+  <a href="{% url 'worker_profile' %}" class="btn btn-ghost"><i class="bi bi-person"></i> My Profile</a>
+</div>
+{% endblock %}

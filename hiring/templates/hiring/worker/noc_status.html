@@ -1,0 +1,42 @@
+{% extends "hiring/base.html" %}
+{% block title %}NOC Status{% endblock %}
+{% block page_title %}NOC Status{% endblock %}
+{% block sidebar %}
+<a href="{% url 'worker_dashboard' %}"><i class="bi bi-speedometer2"></i> Overview</a>
+<div class="nav-label">My Account</div>
+<a href="{% url 'worker_profile' %}"><i class="bi bi-person"></i> My Profile</a>
+<a href="{% url 'worker_noc_status' %}" class="active"><i class="bi bi-shield-check"></i> NOC Status</a>
+<div class="nav-label">Jobs</div>
+<a href="{% url 'worker_view_jobs' %}"><i class="bi bi-briefcase"></i> Browse Jobs</a>
+<a href="{% url 'worker_application_status' %}"><i class="bi bi-list-check"></i> My Applications</a>
+<div class="nav-label">Other</div>
+<a href="{% url 'worker_feedback' %}"><i class="bi bi-chat-dots"></i> Feedback</a>
+{% endblock %}
+{% block content %}
+<div class="page-header fade-up"><div><h1>NOC Status</h1><p>Your No Objection Certificate status.</p></div></div>
+<div class="card fade-up" style="max-width:480px;">
+  <div class="card-body" style="text-align:center;padding:52px 40px;">
+    {% if noc %}
+      {% if noc.status == 'Approved' %}
+        <div style="width:80px;height:80px;background:rgba(6,214,160,0.12);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;border:2px solid rgba(6,214,160,0.3);"><i class="bi bi-patch-check-fill" style="font-size:2.2rem;color:var(--accent3);"></i></div>
+        <h2 style="font-family:'Syne',sans-serif;font-weight:800;color:var(--accent3);margin-bottom:8px;">NOC Approved</h2>
+        <p style="color:var(--text2);font-size:0.875rem;">Your No Objection Certificate has been approved by police authorities. You are eligible to apply for jobs.</p>
+      {% elif noc.status == 'Rejected' %}
+        <div style="width:80px;height:80px;background:rgba(239,68,68,0.12);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;border:2px solid rgba(239,68,68,0.3);"><i class="bi bi-x-circle-fill" style="font-size:2.2rem;color:var(--danger);"></i></div>
+        <h2 style="font-family:'Syne',sans-serif;font-weight:800;color:var(--danger);margin-bottom:8px;">NOC Rejected</h2>
+        <p style="color:var(--text2);font-size:0.875rem;">Your NOC has been rejected. Please contact the administrator for further assistance.</p>
+      {% else %}
+        <div style="width:80px;height:80px;background:rgba(245,158,11,0.12);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;border:2px solid rgba(245,158,11,0.3);"><i class="bi bi-clock-fill" style="font-size:2.2rem;color:var(--accent4);"></i></div>
+        <h2 style="font-family:'Syne',sans-serif;font-weight:800;color:var(--accent4);margin-bottom:8px;">Pending Verification</h2>
+        <p style="color:var(--text2);font-size:0.875rem;">Your NOC is awaiting police verification. Please check back later.</p>
+      {% endif %}
+      {% if noc.remarks %}<div style="margin-top:20px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;padding:14px;"><p style="font-size:0.8rem;color:var(--text3);margin-bottom:4px;">Remarks</p><p style="font-size:0.875rem;color:var(--text2);">{{ noc.remarks }}</p></div>{% endif %}
+      {% if noc.verified_by %}<p style="color:var(--text3);font-size:0.75rem;margin-top:16px;">Reviewed by: {{ noc.verified_by.user.username }}</p>{% endif %}
+    {% else %}
+      <div style="width:80px;height:80px;background:rgba(245,158,11,0.12);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;"><i class="bi bi-clock-fill" style="font-size:2.2rem;color:var(--accent4);"></i></div>
+      <h2 style="font-family:'Syne',sans-serif;font-weight:800;color:var(--accent4);margin-bottom:8px;">Pending</h2>
+      <p style="color:var(--text2);font-size:0.875rem;">Your NOC is awaiting police verification.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

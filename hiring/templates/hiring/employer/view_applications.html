@@ -1,0 +1,39 @@
+{% extends "hiring/base.html" %}
+{% block title %}Applications{% endblock %}
+{% block page_title %}Applications{% endblock %}
+{% block sidebar %}
+<a href="{% url 'employer_dashboard' %}"><i class="bi bi-speedometer2"></i> Overview</a>
+<div class="nav-label">Jobs</div>
+<a href="{% url 'employer_add_job' %}"><i class="bi bi-plus-circle"></i> Post Job</a>
+<a href="{% url 'employer_view_jobs' %}"><i class="bi bi-briefcase"></i> My Jobs</a>
+<div class="nav-label">Applications</div>
+<a href="{% url 'employer_view_applications' %}" class="active"><i class="bi bi-file-earmark-person"></i> Applications</a>
+{% endblock %}
+{% block content %}
+<div class="page-header fade-up"><div><h1>Applications</h1><p>Review and manage worker applications.</p></div></div>
+<div class="card fade-up"><div class="table-wrap"><table>
+<thead><tr><th>ID</th><th>Worker</th><th>Job</th><th>NOC</th><th>Status</th><th>Actions</th></tr></thead>
+<tbody>
+{% for a in applications %}
+<tr>
+  <td>#{{ a.rqid }}</td>
+  <td style="color:var(--text);font-weight:500;">{{ a.worker.name }}</td>
+  <td>{{ a.job.job_name }}</td>
+  <td>
+    {% if a.worker.noc %}<span class="badge badge-{{ a.worker.noc.status|lower }}">{{ a.worker.noc.status }}</span>
+    <a href="{% url 'employer_view_worker_noc' a.worker.wid %}" class="btn btn-ghost btn-xs" style="margin-left:4px;">View</a>
+    {% else %}—{% endif %}
+  </td>
+  <td><span class="badge badge-{{ a.status|lower }}">{{ a.status }}</span></td>
+  <td>
+    {% if a.status == 'Pending' %}
+    <div style="display:flex;gap:6px;">
+      <a href="{% url 'employer_action_request' a.rqid 'approve' %}" class="btn btn-success btn-xs"><i class="bi bi-check"></i> Accept</a>
+      <a href="{% url 'employer_action_request' a.rqid 'reject' %}" class="btn btn-danger btn-xs"><i class="bi bi-x"></i> Reject</a>
+    </div>
+    {% else %}<span style="font-size:0.75rem;color:var(--text3);">Decided</span>{% endif %}
+  </td>
+</tr>
+{% empty %}<tr><td colspan="6"><div class="empty-state"><i class="bi bi-file-earmark-person"></i><p>No applications yet.</p></div></td></tr>{% endfor %}
+</tbody></table></div></div>
+{% endblock %}

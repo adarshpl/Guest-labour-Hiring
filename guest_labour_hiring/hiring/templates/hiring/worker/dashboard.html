@@ -1,0 +1,32 @@
+
+{% extends "hiring/base.html" %}
+{% block title %}Worker Portal — GLH{% endblock %}
+{% block page_title %}Worker <span>Portal</span>{% endblock %}
+{% block sidebar %}
+<a class="active" href="{% url 'worker_dashboard' %}"><i class="bi bi-grid-1x2"></i> Dashboard</a>
+<div class="sb-section">Profile</div>
+<a href="{% url 'worker_profile' %}"><i class="bi bi-person-badge"></i> My Profile</a>
+<a href="{% url 'worker_noc_status' %}"><i class="bi bi-shield-check"></i> NOC Status</a>
+<div class="sb-section">Jobs</div>
+<a href="{% url 'worker_view_jobs' %}"><i class="bi bi-briefcase"></i> Browse Jobs</a>
+<a href="{% url 'worker_application_status' %}"><i class="bi bi-file-earmark-text"></i> My Applications</a>
+<div class="sb-section">Support</div>
+<a href="{% url 'worker_feedback' %}"><i class="bi bi-chat-dots"></i> Send Feedback</a>
+{% endblock %}
+{% block content %}
+<div class="page-hdr fu"><div><h1>Worker <span>Portal</span></h1><p>Your personal dashboard and job tracking system</p></div></div>
+<div class="stats-grid">
+  <div class="stat-card fu fu1"><i class="bi bi-file-earmark-text stat-icon"></i><span class="stat-num">{{ applications }}</span><div class="stat-label">Applications</div></div>
+  <div class="stat-card fu fu2"><i class="bi bi-check-circle stat-icon"></i><span class="stat-num green">{{ approved }}</span><div class="stat-label">Approved</div></div>
+  <div class="stat-card fu fu3">
+    <i class="bi bi-shield stat-icon"></i>
+    <span class="stat-num {% if noc_status == 'Approved' %}green{% elif noc_status == 'Rejected' %}red{% endif %}">{{ noc_status|default:"Pending" }}</span>
+    <div class="stat-label">NOC Status</div>
+  </div>
+</div>
+<div style="display:flex;gap:12px;" class="fu">
+  <a href="{% url 'worker_view_jobs' %}" class="btn btn-gold"><i class="bi bi-briefcase"></i> Browse Jobs</a>
+  <a href="{% url 'worker_noc_status' %}" class="btn btn-outline"><i class="bi bi-shield-check"></i> Check NOC</a>
+  <a href="{% url 'worker_profile' %}" class="btn btn-ghost"><i class="bi bi-person-badge"></i> My Profile</a>
+</div>
+{% endblock %}

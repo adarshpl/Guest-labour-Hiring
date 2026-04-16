@@ -1,0 +1,25 @@
+{% extends "hiring/base.html" %}
+{% block title %}Employer Dashboard{% endblock %}
+{% block page_title %}Employer Dashboard{% endblock %}
+{% block sidebar %}
+<a href="{% url 'employer_dashboard' %}" class="active"><i class="bi bi-speedometer2"></i> Overview</a>
+<div class="nav-label">Jobs</div>
+<a href="{% url 'employer_add_job' %}"><i class="bi bi-plus-circle"></i> Post Job</a>
+<a href="{% url 'employer_view_jobs' %}"><i class="bi bi-briefcase"></i> My Jobs</a>
+<div class="nav-label">Applications</div>
+<a href="{% url 'employer_view_applications' %}"><i class="bi bi-file-earmark-person"></i> Applications</a>
+{% endblock %}
+{% block content %}
+<div class="page-header fade-up"><div><h1>Employer Dashboard</h1><p>Manage your job postings and worker applications.</p></div>
+<a href="{% url 'employer_add_job' %}" class="btn btn-primary"><i class="bi bi-plus-circle"></i> Post New Job</a></div>
+<div class="stats-grid">
+  <div class="stat-card blue fade-up fade-up-1"><div class="stat-icon"><i class="bi bi-briefcase"></i></div><div class="stat-num">{{ jobs }}</div><div class="stat-label">Posted Jobs</div></div>
+  <div class="stat-card amber fade-up fade-up-2"><div class="stat-icon"><i class="bi bi-clock"></i></div><div class="stat-num">{{ pending }}</div><div class="stat-label">Pending Applications</div></div>
+  <div class="stat-card green fade-up fade-up-3"><div class="stat-icon"><i class="bi bi-person-check"></i></div><div class="stat-num">{{ approved }}</div><div class="stat-label">Hired Workers</div></div>
+</div>
+<div style="display:flex;gap:12px;" class="fade-up">
+  <a href="{% url 'employer_add_job' %}" class="btn btn-primary"><i class="bi bi-plus-circle"></i> Post New Job</a>
+  <a href="{% url 'employer_view_applications' %}" class="btn btn-ghost"><i class="bi bi-list-check"></i> Manage Applications</a>
+  <a href="{% url 'employer_view_jobs' %}" class="btn btn-ghost"><i class="bi bi-briefcase"></i> View My Jobs</a>
+</div>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "hiring/base.html" %}
+{% block title %}Worker NOC{% endblock %}
+{% block page_title %}Worker NOC{% endblock %}
+{% block sidebar %}
+<a href="{% url 'employer_dashboard' %}"><i class="bi bi-speedometer2"></i> Overview</a>
+<div class="nav-label">Jobs</div>
+<a href="{% url 'employer_add_job' %}"><i class="bi bi-plus-circle"></i> Post Job</a>
+<a href="{% url 'employer_view_jobs' %}"><i class="bi bi-briefcase"></i> My Jobs</a>
+<div class="nav-label">Applications</div>
+<a href="{% url 'employer_view_applications' %}" class="active"><i class="bi bi-file-earmark-person"></i> Applications</a>
+{% endblock %}
+{% block content %}
+<div class="page-header fade-up"><div><h1>NOC Details</h1><p>No Objection Certificate for {{ worker.name }}</p></div>
+<a href="{% url 'employer_view_applications' %}" class="btn btn-ghost"><i class="bi bi-arrow-left"></i> Back</a></div>
+<div class="card fade-up" style="max-width:480px;">
+  <div class="card-body" style="text-align:center;padding:40px;">
+    {% if noc %}
+    <div style="font-size:4rem;margin-bottom:16px;">{% if noc.status == 'Approved' %}<i class="bi bi-patch-check-fill" style="color:var(--accent3);"></i>{% elif noc.status == 'Rejected' %}<i class="bi bi-x-circle-fill" style="color:var(--danger);"></i>{% else %}<i class="bi bi-clock-fill" style="color:var(--accent4);"></i>{% endif %}</div>
+    <h3 style="font-family:'Syne',sans-serif;font-weight:800;margin-bottom:8px;">NOC {{ noc.status }}</h3>
+    {% if noc.remarks %}<p style="color:var(--text2);font-size:0.875rem;margin-top:8px;">{{ noc.remarks }}</p>{% endif %}
+    {% if noc.verified_by %}<p style="color:var(--text3);font-size:0.8rem;margin-top:12px;">Verified by: {{ noc.verified_by.user.username }}</p>{% endif %}
+    {% else %}<div class="empty-state"><i class="bi bi-clock"></i><p>No NOC record found.</p></div>{% endif %}
+  </div>
+</div>
+{% endblock %}

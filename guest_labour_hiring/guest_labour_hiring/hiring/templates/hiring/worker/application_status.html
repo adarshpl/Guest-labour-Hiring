@@ -1,0 +1,29 @@
+{% extends "hiring/base.html" %}
+{% block title %}My Applications{% endblock %}
+{% block page_title %}<i class="bi bi-list-check me-2"></i>My Applications{% endblock %}
+{% block sidebar %}
+<a href="{% url 'worker_dashboard' %}"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a>
+<a href="{% url 'worker_profile' %}"><i class="bi bi-person me-2"></i>My Profile</a>
+<a href="{% url 'worker_noc_status' %}"><i class="bi bi-shield-check me-2"></i>NOC Status</a>
+<a href="{% url 'worker_view_jobs' %}"><i class="bi bi-briefcase me-2"></i>Available Jobs</a>
+<a href="{% url 'worker_application_status' %}" class="active"><i class="bi bi-list-check me-2"></i>My Applications</a>
+<a href="{% url 'worker_feedback' %}"><i class="bi bi-chat-dots me-2"></i>Give Feedback</a>
+{% endblock %}
+{% block content %}
+<div class="card border-0 shadow-sm">
+  <div class="table-responsive">
+    <table class="table table-hover mb-0">
+      <thead><tr><th>#</th><th>Job</th><th>Contractor</th><th>Salary</th><th>Status</th></tr></thead>
+      <tbody>
+      {% for a in applications %}
+      <tr>
+        <td>{{ a.rqid }}</td><td>{{ a.job.job_name }}</td>
+        <td>{{ a.job.contractor.name }}</td><td>₹{{ a.job.salary }}</td>
+        <td><span class="badge badge-{{ a.status|lower }} px-2 py-1">{{ a.status }}</span></td>
+      </tr>
+      {% empty %}<tr><td colspan="5" class="text-center text-muted py-4">No applications yet.</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

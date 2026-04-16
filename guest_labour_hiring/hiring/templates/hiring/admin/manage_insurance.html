@@ -1,0 +1,55 @@
+
+{% extends "hiring/base.html" %}
+{% block title %}Insurance — GLH{% endblock %}
+{% block page_title %}<span>Insurance</span> Management{% endblock %}
+{% block sidebar %}
+<a href="{% url 'admin_dashboard' %}"><i class="bi bi-grid-1x2"></i> Dashboard</a>
+<div class="sb-section">Workers</div>
+<a href="{% url 'admin_add_worker' %}"><i class="bi bi-person-plus"></i> Add Worker</a>
+<a href="{% url 'admin_view_workers' %}"><i class="bi bi-people"></i> View Workers</a>
+<div class="sb-section">Police</div>
+<a href="{% url 'admin_add_police' %}"><i class="bi bi-shield-plus"></i> Add Police</a>
+<a href="{% url 'admin_view_police' %}"><i class="bi bi-shield-lock"></i> View Police</a>
+<div class="sb-section">Employers</div>
+<a href="{% url 'admin_add_contractor' %}"><i class="bi bi-building-add"></i> Add Contractor</a>
+<a href="{% url 'admin_view_contractors' %}"><i class="bi bi-building"></i> View Contractors</a>
+<div class="sb-section">Reports</div>
+<a href="{% url 'admin_view_jobs' %}"><i class="bi bi-briefcase"></i> All Jobs</a>
+<a href="{% url 'admin_view_requests' %}"><i class="bi bi-file-earmark-text"></i> Requests</a>
+<a class="active" href="{% url 'admin_manage_insurance' %}"><i class="bi bi-shield-check"></i> Insurance</a>
+<a href="{% url 'admin_view_feedback' %}"><i class="bi bi-chat-dots"></i> Feedback</a>
+{% endblock %}
+{% block content %}
+<div class="page-hdr fu"><div><h1>Insurance <span>Management</span></h1><p>Add and track worker insurance records</p></div></div>
+<div style="display:grid;grid-template-columns:340px 1fr;gap:20px;align-items:start;">
+  <div class="card fu">
+    <div class="card-hdr"><div class="card-title"><i class="bi bi-plus-circle"></i> Add Record</div></div>
+    <div class="card-body">
+      <form method="post">{% csrf_token %}
+        <div class="form-group" style="margin-bottom:14px;"><label class="form-label">Worker</label>{{ form.worker }}</div>
+        <div class="form-group" style="margin-bottom:14px;"><label class="form-label">Insurance Type</label>{{ form.insurance_type }}</div>
+        <div class="form-group" style="margin-bottom:14px;"><label class="form-label">Plan Name</label>{{ form.insurance_name }}</div>
+        <div class="form-group" style="margin-bottom:20px;"><label class="form-label">Amount (₹)</label>{{ form.amount }}</div>
+        <button type="submit" class="btn btn-gold" style="width:100%;justify-content:center;"><i class="bi bi-plus"></i> Add Record</button>
+      </form>
+    </div>
+  </div>
+  <div class="card fu"><div class="card-hdr"><div class="card-title"><i class="bi bi-shield-check"></i> Insurance Records</div></div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>ID</th><th>Worker</th><th>Type</th><th>Plan</th><th>Amount</th></tr></thead>
+      <tbody>
+      {% for i in insurances %}
+      <tr>
+        <td style="font-size:.8rem;color:var(--mist);">#{{ i.id }}</td>
+        <td class="primary">{{ i.worker.name }}</td>
+        <td>{{ i.insurance_type }}</td>
+        <td>{{ i.insurance_name }}</td>
+        <td style="color:var(--gold);font-family:'Bebas Neue';font-size:1.05rem;">₹{{ i.amount }}</td>
+      </tr>
+      {% empty %}<tr><td colspan="5"><div class="empty"><i class="bi bi-shield"></i><p>No records yet</p></div></td></tr>
+      {% endfor %}
+      </tbody>
+    </table></div>
+  </div>
+</div>
+{% endblock %}

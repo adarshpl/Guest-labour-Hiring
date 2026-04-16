@@ -1,0 +1,36 @@
+
+{% extends "hiring/base.html" %}
+{% block title %}Applications — GLH{% endblock %}
+{% block page_title %}Incoming <span>Applications</span>{% endblock %}
+{% block sidebar %}
+<a href="{% url 'employer_dashboard' %}"><i class="bi bi-grid-1x2"></i> Dashboard</a>
+<div class="sb-section">Jobs</div>
+<a href="{% url 'employer_add_job' %}"><i class="bi bi-plus-circle"></i> Post Job</a>
+<a href="{% url 'employer_view_jobs' %}"><i class="bi bi-briefcase"></i> My Jobs</a>
+<div class="sb-section">Applications</div>
+<a class="active" href="{% url 'employer_view_applications' %}"><i class="bi bi-file-earmark-person"></i> Applications</a>
+{% endblock %}
+{% block content %}
+<div class="page-hdr fu"><div><h1>Incoming <span>Applications</span></h1><p>Review and process worker job applications</p></div></div>
+<div class="card fu"><div class="tbl-wrap"><table>
+  <thead><tr><th>ID</th><th>Worker</th><th>Job</th><th>NOC</th><th>Status</th><th>Actions</th></tr></thead>
+  <tbody>
+  {% for r in requests %}
+  <tr>
+    <td style="font-size:.8rem;color:var(--mist);">#{{ r.rqid }}</td>
+    <td class="primary">{{ r.worker.name }}</td>
+    <td>{{ r.job.job_name }}</td>
+    <td><a href="{% url 'employer_view_worker_noc' r.worker.wid %}" class="btn btn-ghost btn-xs"><i class="bi bi-shield-check"></i> View NOC</a></td>
+    <td><span class="badge badge-{{ r.status|lower }}">{{ r.status }}</span></td>
+    <td><div style="display:flex;gap:6px;">
+      {% if r.status == 'Pending' %}
+      <a href="{% url 'employer_accept_request' r.rqid %}" class="btn btn-success btn-xs"><i class="bi bi-check"></i> Accept</a>
+      <a href="{% url 'employer_reject_request' r.rqid %}" class="btn btn-danger btn-xs"><i class="bi bi-x"></i> Reject</a>
+      {% endif %}
+    </div></td>
+  </tr>
+  {% empty %}<tr><td colspan="6"><div class="empty"><i class="bi bi-file-earmark-person"></i><p>No applications yet</p></div></td></tr>
+  {% endfor %}
+  </tbody>
+</table></div></div>
+{% endblock %}

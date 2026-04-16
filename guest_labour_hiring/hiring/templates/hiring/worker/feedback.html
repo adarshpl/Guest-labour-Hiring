@@ -1,0 +1,28 @@
+
+{% extends "hiring/base.html" %}
+{% block title %}Feedback — GLH{% endblock %}
+{% block page_title %}Send <span>Feedback</span>{% endblock %}
+{% block sidebar %}
+<a href="{% url 'worker_dashboard' %}"><i class="bi bi-grid-1x2"></i> Dashboard</a>
+<div class="sb-section">Profile</div>
+<a href="{% url 'worker_profile' %}"><i class="bi bi-person-badge"></i> My Profile</a>
+<a href="{% url 'worker_noc_status' %}"><i class="bi bi-shield-check"></i> NOC Status</a>
+<div class="sb-section">Jobs</div>
+<a href="{% url 'worker_view_jobs' %}"><i class="bi bi-briefcase"></i> Browse Jobs</a>
+<a href="{% url 'worker_application_status' %}"><i class="bi bi-file-earmark-text"></i> My Applications</a>
+<div class="sb-section">Support</div>
+<a class="active" href="{% url 'worker_feedback' %}"><i class="bi bi-chat-dots"></i> Send Feedback</a>
+{% endblock %}
+{% block content %}
+<div class="page-hdr fu"><div><h1>Send <span>Feedback</span></h1><p>Submit your message to the system administrators</p></div></div>
+<div class="card fu" style="max-width:540px;">
+  <div class="card-hdr"><div class="card-title"><i class="bi bi-chat-dots"></i> Feedback Form</div></div>
+  <div class="card-body">
+    <form method="post">{% csrf_token %}
+      <div class="form-group" style="margin-bottom:16px;"><label class="form-label">Your Name</label>{{ form.name }}</div>
+      <div class="form-group" style="margin-bottom:22px;"><label class="form-label">Message</label>{{ form.message }}</div>
+      <button type="submit" class="btn btn-gold"><i class="bi bi-send"></i> Send Feedback</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

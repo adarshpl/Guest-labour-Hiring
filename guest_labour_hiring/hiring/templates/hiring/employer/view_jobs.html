@@ -1,0 +1,34 @@
+
+{% extends "hiring/base.html" %}
+{% block title %}My Jobs — GLH{% endblock %}
+{% block page_title %}My <span>Jobs</span>{% endblock %}
+{% block sidebar %}
+<a href="{% url 'employer_dashboard' %}"><i class="bi bi-grid-1x2"></i> Dashboard</a>
+<div class="sb-section">Jobs</div>
+<a href="{% url 'employer_add_job' %}"><i class="bi bi-plus-circle"></i> Post Job</a>
+<a class="active" href="{% url 'employer_view_jobs' %}"><i class="bi bi-briefcase"></i> My Jobs</a>
+<div class="sb-section">Applications</div>
+<a href="{% url 'employer_view_applications' %}"><i class="bi bi-file-earmark-person"></i> Applications</a>
+{% endblock %}
+{% block content %}
+<div class="page-hdr fu">
+  <div><h1>My <span>Jobs</span></h1><p>All your posted job vacancies</p></div>
+  <a href="{% url 'employer_add_job' %}" class="btn btn-gold"><i class="bi bi-plus-circle"></i> Post Job</a>
+</div>
+<div class="card fu"><div class="tbl-wrap"><table>
+  <thead><tr><th>ID</th><th>Job Name</th><th>Type</th><th>Vacancies</th><th>Experience</th><th>Salary</th><th>Qualification</th></tr></thead>
+  <tbody>
+  {% for j in jobs %}
+  <tr>
+    <td style="font-size:.8rem;color:var(--mist);">#{{ j.jid }}</td>
+    <td class="primary">{{ j.job_name }}</td>
+    <td>{{ j.job_type }}</td><td>{{ j.vacancy }}</td>
+    <td>{{ j.experience }}</td>
+    <td style="color:var(--gold);font-family:'Bebas Neue';font-size:1.05rem;">₹{{ j.salary }}</td>
+    <td>{{ j.qualification }}</td>
+  </tr>
+  {% empty %}<tr><td colspan="7"><div class="empty"><i class="bi bi-briefcase"></i><p>No jobs posted yet</p></div></td></tr>
+  {% endfor %}
+  </tbody>
+</table></div></div>
+{% endblock %}

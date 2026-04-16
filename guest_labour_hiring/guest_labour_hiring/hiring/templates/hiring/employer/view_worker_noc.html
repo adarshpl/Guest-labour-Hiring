@@ -1,0 +1,24 @@
+{% extends "hiring/base.html" %}
+{% block title %}Worker NOC{% endblock %}
+{% block page_title %}<i class="bi bi-file-earmark-check me-2"></i>Worker NOC Details{% endblock %}
+{% block sidebar %}
+<a href="{% url 'employer_dashboard' %}"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a>
+<a href="{% url 'employer_add_job' %}"><i class="bi bi-plus-circle me-2"></i>Post Job</a>
+<a href="{% url 'employer_view_jobs' %}"><i class="bi bi-briefcase me-2"></i>My Jobs</a>
+<a href="{% url 'employer_view_applications' %}"><i class="bi bi-file-earmark-person me-2"></i>Applications</a>
+{% endblock %}
+{% block content %}
+<div class="card border-0 shadow-sm" style="max-width:500px">
+  <div class="card-body p-4">
+    <h5 class="mb-3">NOC for {{ worker.name }}</h5>
+    {% if noc %}
+    <table class="table table-borderless">
+      <tr><th>Status</th><td><span class="badge badge-{{ noc.status|lower }} px-2 py-1">{{ noc.status }}</span></td></tr>
+      <tr><th>Remarks</th><td>{{ noc.remarks|default:"—" }}</td></tr>
+      <tr><th>Verified By</th><td>{{ noc.verified_by.user.username|default:"Pending" }}</td></tr>
+    </table>
+    {% else %}<p class="text-muted">No NOC record found for this worker.</p>{% endif %}
+    <a href="{% url 'employer_view_applications' %}" class="btn btn-outline-secondary">← Back</a>
+  </div>
+</div>
+{% endblock %}

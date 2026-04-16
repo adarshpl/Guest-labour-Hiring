@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guest Labour Hiring System</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <style>
+    :root {
+      --ink: #03050d;
+      --gold: #d4a84b;
+      --gold2: #f5c842;
+      --cream: #f0ece2;
+      --mist: #6b7591;
+      --wire: rgba(255,255,255,0.07);
+      --gold-glow: rgba(212,168,75,0.18);
+    }
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { font-family:'DM Sans',sans-serif; background:var(--ink); color:var(--cream); overflow-x:hidden; }
+    ::-webkit-scrollbar{width:3px;} ::-webkit-scrollbar-track{background:var(--ink);} ::-webkit-scrollbar-thumb{background:var(--gold);}
+
+    /* ─── NAVBAR ─── */
+    nav {
+      position:fixed; top:0; left:0; right:0; z-index:1000;
+      height:72px; padding:0 60px;
+      display:flex; align-items:center; justify-content:space-between;
+      background:rgba(3,5,13,0.75);
+      backdrop-filter:blur(20px);
+      border-bottom:1px solid rgba(212,168,75,0.2);
+      box-shadow:0 1px 40px rgba(212,168,75,0.05);
+    }
+    .brand { display:flex; align-items:center; gap:13px; text-decoration:none; }
+    .brand-icon {
+      width:38px; height:38px;
+      background:linear-gradient(135deg,var(--gold),#9a6010);
+      border-radius:9px;
+      display:flex; align-items:center; justify-content:center;
+      font-size:1rem; color:#000;
+      box-shadow:0 0 20px rgba(212,168,75,0.45);
+    }
+    .brand-name { font-family:'Bebas Neue',sans-serif; font-size:1.25rem; letter-spacing:0.1em; color:var(--cream); }
+    .nav-links { display:flex; align-items:center; gap:36px; }
+    .nav-links a { color:var(--mist); font-size:0.78rem; text-decoration:none; letter-spacing:0.07em; text-transform:uppercase; font-weight:500; transition:color 0.2s; }
+    .nav-links a:hover { color:var(--gold); }
+    .nav-login {
+      padding:9px 24px; border:1.5px solid var(--gold);
+      border-radius:7px; color:var(--gold); font-size:0.78rem;
+      font-weight:600; letter-spacing:0.08em; text-transform:uppercase;
+      text-decoration:none; transition:all 0.25s;
+      box-shadow:0 0 14px rgba(212,168,75,0.12);
+    }
+    .nav-login:hover { background:var(--gold); color:#000; box-shadow:0 0 32px rgba(212,168,75,0.5); }
+
+    /* ─── HERO ─── */
+    .hero {
+      min-height:100vh;
+      display:flex; flex-direction:column;
+      align-items:center; justify-content:center;
+      text-align:center;
+      padding:110px 40px 100px;
+      position:relative; overflow:hidden;
+    }
+
+    /* Animated radial glow */
+    .hero::before {
+      content:'';
+      position:absolute; top:50%; left:50%;
+      width:900px; height:900px;
+      background:radial-gradient(circle, rgba(212,168,75,0.1) 0%, rgba(212,168,75,0.03) 40%, transparent 70%);
+      transform:translate(-50%,-52%);
+      border-radius:50%;
+      animation:heroPulse 5s ease-in-out infinite;
+      pointer-events:none;
+    }
+    @keyframes heroPulse { 0%,100%{transform:translate(-50%,-52%) scale(1);opacity:1;} 50%{transform:translate(-50%,-52%) scale(1.12);opacity:0.7;} }
+
+    /* Grid */
+    .grid-bg {
+      position:absolute; inset:0; pointer-events:none;
+      background-image:
+        linear-gradient(rgba(212,168,75,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(212,168,75,0.05) 1px, transparent 1px);
+      background-size:72px 72px;
+      mask-image:radial-gradient(ellipse 75% 75% at 50% 50%, black 20%, transparent 80%);
+    }
+
+    /* Particles canvas */
+    #particles-canvas { position:absolute; inset:0; pointer-events:none; z-index:0; }
+
+    /* Glowing horizontal lines */
+    .glow-line {
+      position:absolute; left:0; right:0; height:1px;
+      background:linear-gradient(90deg, transparent 0%, rgba(212,168,75,0.3) 50%, transparent 100%);
+      pointer-events:none;
+      animation:linePulse 4s ease-in-out infinite;
+    }
+    .glow-line.top { top:35%; animation-delay:0s; }
+    .glow-line.bot { top:65%; animation-delay:2s; }
+    @keyframes linePulse { 0%,100%{opacity:0.2;} 50%{opacity:0.6;} }
+
+    /* Hero content */
+    .hero-inner { position:relative; z-index:2; max-width:1000px; width:100%; }
+
+    /* Pill badge */
+    .hero-pill {
+      display:inline-flex; align-items:center; gap:10px;
+      background:rgba(212,168,75,0.07);
+      border:1px solid rgba(212,168,75,0.3);
+      border-radius:50px; padding:9px 22px; margin-bottom:40px;
+      font-size:0.72rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--gold);
+      opacity:0; animation:fadeDown 0.8s 0.1s ease both;
+      box-shadow:0 0 20px rgba(212,168,75,0.08);
+    }
+    .pill-dot { width:7px; height:7px; background:var(--gold); border-radius:50%; animation:blink 2s ease-in-out infinite; box-shadow:0 0 8px var(--gold); }
+    @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.25;} }
+
+    /* Giant heading */
+    .hero-title {
+      font-family:'Bebas Neue',sans-serif;
+      font-size:clamp(5.5rem,15vw,15rem);
+      line-height:0.83;
+      letter-spacing:0.015em;
+      margin-bottom:36px;
+    }
+    .ht-row { display:block; overflow:hidden; }
+    .ht-inner {
+      display:block;
+      opacity:0; transform:translateY(110%);
+      animation:wordUp 1s ease both;
+    }
+    .ht-row:nth-child(1) .ht-inner { animation-delay:0.2s; color:var(--cream); }
+    .ht-row:nth-child(2) .ht-inner {
+      animation-delay:0.38s;
+      background:linear-gradient(135deg, var(--gold) 0%, var(--gold2) 50%, var(--gold) 100%);
+      background-size:200% auto;
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+      animation:wordUp 1s 0.38s ease both, textShimmer 3s 1.5s linear infinite;
+      filter:drop-shadow(0 0 30px rgba(212,168,75,0.4));
+    }
+    .ht-row:nth-child(3) .ht-inner {
+      animation-delay:0.56s;
+      -webkit-text-stroke:1.5px rgba(240,236,226,0.18);
+      color:transparent;
+    }
+    @keyframes wordUp { from{opacity:0;transform:translateY(110%);} to{opacity:1;transform:translateY(0);} }
+    @keyframes textShimmer { 0%{background-position:0% center;} 100%{background-position:200% center;} }
+
+    /* Subtitle */
+    .hero-sub {
+      font-size:1.05rem; color:var(--mist); font-weight:300; line-height:1.75;
+      max-width:540px; margin:0 auto 52px;
+      opacity:0; animation:fadeUp 0.8s 0.85s ease both;
+    }
+    .hero-sub b { color:var(--cream); font-weight:500; }
+
+    /* Buttons */
+    .hero-btns {
+      display:flex; gap:16px; justify-content:center; flex-wrap:wrap;
+      opacity:0; animation:fadeUp 0.8s 1.05s ease both;
+      margin-bottom:72px;
+    }
+    .btn-primary {
+      display:inline-flex; align-items:center; gap:10px;
+      padding:17px 42px;
+      background:linear-gradient(135deg, var(--gold), #a0700d);
+      color:#000; font-weight:700; font-size:0.88rem;
+      letter-spacing:0.07em; text-transform:uppercase;
+      text-decoration:none; border-radius:9px;
+      box-shadow:0 8px 30px rgba(212,168,75,0.4);
+      transition:all 0.3s;
+      animation:fadeUp 0.8s 1.05s ease both, btnPulse 3s 2s ease-in-out infinite;
+    }
+    .btn-primary:hover { transform:translateY(-3px); box-shadow:0 16px 50px rgba(212,168,75,0.55); }
+    @keyframes btnPulse { 0%,100%{box-shadow:0 8px 30px rgba(212,168,75,0.4),0 0 0 0 rgba(212,168,75,0.3);} 50%{box-shadow:0 8px 30px rgba(212,168,75,0.4),0 0 0 18px rgba(212,168,75,0);} }
+    .btn-secondary {
+      display:inline-flex; align-items:center; gap:10px;
+      padding:17px 42px;
+      border:1.5px solid rgba(255,255,255,0.15);
+      color:var(--cream); font-size:0.88rem;
+      letter-spacing:0.07em; text-transform:uppercase;
+      text-decoration:none; border-radius:9px;
+      transition:all 0.3s;
+    }
+    .btn-secondary:hover { border-color:var(--gold); color:var(--gold); background:rgba(212,168,75,0.05); }
+
+    /* Hero stat bar */
+    .hero-statbar {
+      display:grid; grid-template-columns:repeat(4,1fr);
+      border:1px solid rgba(212,168,75,0.15);
+      border-radius:14px;
+      overflow:hidden;
+      opacity:0; animation:fadeUp 0.8s 1.3s ease both;
+      background:rgba(212,168,75,0.03);
+      backdrop-filter:blur(10px);
+    }
+    .hstat {
+      padding:22px 24px; text-align:center;
+      border-right:1px solid rgba(212,168,75,0.1);
+      transition:background 0.3s;
+    }
+    .hstat:last-child { border-right:none; }
+    .hstat:hover { background:rgba(212,168,75,0.06); }
+    .hstat-n { font-family:'Bebas Neue',sans-serif; font-size:2.4rem; color:var(--gold); line-height:1; display:block; }
+    .hstat-l { font-size:0.68rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--mist); margin-top:4px; }
+
+    /* Scroll mouse */
+    .scroll-mouse {
+      position:absolute; bottom:32px; left:50%; transform:translateX(-50%);
+      display:flex; flex-direction:column; align-items:center; gap:8px;
+      opacity:0; animation:fadeUp 0.8s 1.6s ease both;
+      z-index:2;
+    }
+    .s-box { width:26px; height:40px; border:1.5px solid rgba(212,168,75,0.35); border-radius:13px; display:flex; align-items:flex-start; justify-content:center; padding-top:7px; }
+    .s-dot { width:3px; height:9px; background:var(--gold); border-radius:2px; animation:scrollDot 1.8s ease-in-out infinite; box-shadow:0 0 6px var(--gold); }
+    @keyframes scrollDot { 0%{transform:translateY(0);opacity:1;} 100%{transform:translateY(14px);opacity:0;} }
+    .scroll-mouse span { font-size:0.6rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--mist); }
+
+    @keyframes fadeDown { from{opacity:0;transform:translateY(-16px);} to{opacity:1;transform:translateY(0);} }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(20px);} to{opacity:1;transform:translateY(0);} }
+
+    /* ─── MARQUEE ─── */
+    .marquee {
+      overflow:hidden; padding:16px 0;
+      border-top:1px solid var(--wire);
+      border-bottom:1px solid var(--wire);
+      background:rgba(212,168,75,0.015);
+    }
+    .m-track { display:flex; width:max-content; animation:marq 30s linear infinite; }
+    .m-track:hover { animation-play-state:paused; cursor:default; }
+    .m-item { display:flex; align-items:center; gap:14px; padding:0 26px; font-family:'Bebas Neue',sans-serif; font-size:0.82rem; letter-spacing:0.14em; color:var(--mist); white-space:nowrap; }
+    .m-item.hi { color:var(--gold); }
+    .m-dot { width:4px; height:4px; background:var(--gold); border-radius:50%; opacity:0.45; flex-shrink:0; }
+    @keyframes marq { from{transform:translateX(0);} to{transform:translateX(-50%);} }
+
+    /* ─── ABOUT ─── */
+    .about { display:grid; grid-template-columns:1fr 1fr; }
+    .about-l {
+      padding:100px 64px;
+      border-right:1px solid var(--wire);
+      position:relative;
+    }
+    .about-l::before { content:''; position:absolute; top:60px; bottom:60px; left:0; width:2px; background:linear-gradient(to bottom, transparent, var(--gold), transparent); opacity:0.25; }
+    .about-r { padding:100px 64px; background:rgba(255,255,255,0.015); }
+    .sec-tag { font-size:0.67rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--gold); margin-bottom:20px; display:flex; align-items:center; gap:12px; }
+    .sec-tag::before { content:''; width:28px; height:1px; background:var(--gold); flex-shrink:0; }
+    .sec-h { font-family:'Bebas Neue',sans-serif; font-size:clamp(3rem,5vw,5rem); line-height:0.9; color:var(--cream); margin-bottom:24px; }
+    .sec-h em { font-style:normal; color:var(--gold); }
+    .sec-p { font-size:0.95rem; line-height:1.8; color:var(--mist); margin-bottom:18px; font-weight:300; }
+    .sec-p b { color:var(--cream); font-weight:500; }
+    .credit-box {
+      display:inline-flex; align-items:center; gap:10px; margin-top:12px;
+      padding:11px 20px; border:1px solid rgba(212,168,75,0.2);
+      border-radius:8px; background:rgba(212,168,75,0.04);
+      font-size:0.8rem; color:var(--gold); font-weight:500;
+    }
+    .credit-box strong { color:var(--gold2); }
+
+    /* Mosaic */
+    .mosaic { display:grid; grid-template-columns:1fr 1fr; grid-template-rows:210px 210px; gap:10px; }
+    .mc { border-radius:10px; overflow:hidden; position:relative; }
+    .mc.tall { grid-row:1/3; }
+    .mc img { width:100%; height:100%; object-fit:cover; filter:grayscale(20%) brightness(0.6); transition:all 0.6s; }
+    .mc:hover img { filter:grayscale(0%) brightness(0.8); transform:scale(1.05); }
+    .mc::after { content:''; position:absolute; inset:0; background:linear-gradient(to top,rgba(3,5,13,0.7),transparent 55%); }
+    .mc-lbl { position:absolute; bottom:11px; left:13px; z-index:2; font-size:0.63rem; letter-spacing:0.1em; text-transform:uppercase; color:rgba(255,255,255,0.65); background:rgba(3,5,13,0.8); padding:4px 10px; border-radius:4px; }
+
+    /* ─── STATS ─── */
+    .stats-row { display:grid; grid-template-columns:repeat(4,1fr); border-top:1px solid var(--wire); }
+    .sc {
+      padding:60px 32px; text-align:center;
+      border-right:1px solid var(--wire);
+      position:relative; overflow:hidden; transition:background 0.3s;
+    }
+    .sc:last-child { border-right:none; }
+    .sc::after { content:''; position:absolute; top:0; left:50%; right:50%; height:2px; background:var(--gold); transition:left 0.4s, right 0.4s; }
+    .sc:hover { background:rgba(212,168,75,0.025); }
+    .sc:hover::after { left:0; right:0; }
+    .sn { font-family:'Bebas Neue',sans-serif; font-size:5.5rem; color:var(--gold); line-height:1; display:block; text-shadow:0 0 40px rgba(212,168,75,0.3); }
+    .sl { font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--mist); margin-top:10px; }
+
+    /* ─── FEATURES ─── */
+    .features { padding:120px 64px; }
+    .feat-head { display:flex; justify-content:space-between; align-items:flex-end; padding-bottom:48px; margin-bottom:0; border-bottom:1px solid var(--wire); }
+    .feat-title { font-family:'Bebas Neue',sans-serif; font-size:clamp(3.5rem,7vw,7.5rem); line-height:0.88; color:var(--cream); }
+    .feat-title span { color:var(--gold); }
+    .feat-desc { max-width:260px; color:var(--mist); font-size:0.875rem; line-height:1.7; text-align:right; }
+    .feat-grid { display:grid; grid-template-columns:repeat(3,1fr); border:1px solid var(--wire); gap:1px; background:var(--wire); margin-top:0; }
+    .fi {
+      background:var(--ink); padding:48px 40px;
+      position:relative; overflow:hidden; transition:background 0.3s;
+    }
+    .fi::before { content:''; position:absolute; top:0; left:0; width:0; height:2px; background:var(--gold); transition:width 0.45s ease; }
+    .fi:hover { background:rgba(212,168,75,0.025); }
+    .fi:hover::before { width:100%; }
+    .fi-n { font-family:'Bebas Neue',sans-serif; font-size:4rem; color:rgba(212,168,75,0.06); line-height:1; margin-bottom:14px; transition:color 0.3s; }
+    .fi:hover .fi-n { color:rgba(212,168,75,0.14); }
+    .fi-icon { font-size:1.7rem; color:var(--gold); margin-bottom:18px; display:block; }
+    .fi-name { font-family:'Bebas Neue',sans-serif; font-size:1.45rem; letter-spacing:0.04em; color:var(--cream); margin-bottom:12px; }
+    .fi-text { font-size:0.85rem; color:var(--mist); line-height:1.7; }
+
+    /* ─── IMAGE SCROLL ─── */
+    .img-scr { padding:80px 0; overflow:hidden; }
+    .img-scr-lbl { font-size:0.67rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--gold); padding:0 64px; margin-bottom:28px; display:flex; align-items:center; gap:14px; }
+    .img-scr-lbl::after { content:''; flex:1; height:1px; background:var(--wire); }
+    .img-track { display:flex; gap:14px; width:max-content; animation:imgScroll 35s linear infinite; }
+    .img-track:hover { animation-play-state:paused; }
+    @keyframes imgScroll { from{transform:translateX(0);} to{transform:translateX(-50%);} }
+    .img-c { width:290px; height:185px; border-radius:10px; overflow:hidden; position:relative; border:1px solid var(--wire); flex-shrink:0; }
+    .img-c img { width:100%; height:100%; object-fit:cover; filter:grayscale(20%) brightness(0.6); transition:all 0.5s; }
+    .img-c:hover img { filter:grayscale(0%) brightness(0.82); transform:scale(1.06); }
+    .img-cap { position:absolute; bottom:9px; left:11px; font-size:0.63rem; letter-spacing:0.1em; text-transform:uppercase; color:rgba(255,255,255,0.65); background:rgba(3,5,13,0.82); padding:3px 9px; border-radius:4px; }
+
+    /* ─── ROLES ─── */
+    .roles { padding:120px 64px; background:rgba(255,255,255,0.01); }
+    .r-tag { font-size:0.67rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--gold); margin-bottom:14px; display:flex; align-items:center; gap:12px; }
+    .r-tag::before { content:''; width:28px; height:1px; background:var(--gold); }
+    .r-head { font-family:'Bebas Neue',sans-serif; font-size:clamp(3rem,7vw,7rem); line-height:0.88; margin-bottom:56px; }
+    .r-plain { color:var(--cream); }
+    .r-out { -webkit-text-stroke:1px rgba(240,236,226,0.18); color:transparent; }
+    .r-gold { color:var(--gold); }
+    .r-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:18px; }
+    .rc {
+      border:1px solid var(--wire); border-radius:12px; padding:40px;
+      position:relative; overflow:hidden;
+      transition:all 0.4s; cursor:default;
+      background:rgba(255,255,255,0.01);
+    }
+    .rc::after { content:''; position:absolute; inset:0; background:linear-gradient(135deg,rgba(212,168,75,0.04),transparent); opacity:0; transition:opacity 0.4s; }
+    .rc:hover { border-color:rgba(212,168,75,0.3); transform:translateY(-4px); box-shadow:0 20px 50px rgba(0,0,0,0.5), 0 0 30px rgba(212,168,75,0.06); }
+    .rc:hover::after { opacity:1; }
+    .rc-bg { position:absolute; right:22px; top:10px; font-family:'Bebas Neue',sans-serif; font-size:7rem; color:rgba(255,255,255,0.02); line-height:1; pointer-events:none; transition:color 0.4s; }
+    .rc:hover .rc-bg { color:rgba(212,168,75,0.05); }
+    .rc-icon { width:50px; height:50px; border:1px solid rgba(212,168,75,0.22); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.3rem; color:var(--gold); margin-bottom:22px; transition:all 0.3s; }
+    .rc:hover .rc-icon { background:rgba(212,168,75,0.09); box-shadow:0 0 22px rgba(212,168,75,0.18); }
+    .rc-name { font-family:'Bebas Neue',sans-serif; font-size:2rem; letter-spacing:0.04em; color:var(--cream); margin-bottom:10px; }
+    .rc-desc { font-size:0.875rem; color:var(--mist); line-height:1.7; margin-bottom:22px; }
+    .rc-tags { display:flex; flex-wrap:wrap; gap:7px; }
+    .rt { font-size:0.66rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--gold); background:rgba(212,168,75,0.07); border:1px solid rgba(212,168,75,0.14); padding:4px 10px; border-radius:4px; }
+
+    /* ─── CTA ─── */
+    .cta { padding:160px 64px; text-align:center; position:relative; overflow:hidden; }
+    .cta-glow { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:800px; height:800px; background:radial-gradient(circle,rgba(212,168,75,0.07) 0%,transparent 65%); border-radius:50%; pointer-events:none; animation:heroPulse 6s ease-in-out infinite; }
+    .cta-ring { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); border:1px solid rgba(212,168,75,0.06); border-radius:50%; pointer-events:none; animation:ringPulse 5s ease-in-out infinite; }
+    .cr1 { width:400px; height:400px; }
+    .cr2 { width:600px; height:600px; animation-delay:1.5s; }
+    .cr3 { width:800px; height:800px; animation-delay:3s; }
+    @keyframes ringPulse { 0%,100%{transform:translate(-50%,-50%) scale(1);opacity:0.5;} 50%{transform:translate(-50%,-50%) scale(1.04);opacity:1;} }
+    .cta-kicker { font-size:0.67rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--gold); margin-bottom:20px; display:flex; align-items:center; justify-content:center; gap:14px; }
+    .cta-kicker span { width:28px; height:1px; background:var(--gold); }
+    .cta-h { font-family:'Bebas Neue',sans-serif; font-size:clamp(4rem,11vw,11rem); line-height:0.86; color:var(--cream); margin-bottom:24px; }
+    .cta-h .g { color:var(--gold); text-shadow:0 0 60px rgba(212,168,75,0.4); }
+    .cta-p { color:var(--mist); font-size:1rem; max-width:440px; margin:0 auto 52px; line-height:1.7; }
+    .cta-btns { display:flex; gap:16px; justify-content:center; }
+    .cta-contacts { display:flex; justify-content:center; gap:28px; flex-wrap:wrap; margin-top:64px; padding-top:64px; border-top:1px solid var(--wire); }
+    .cl { display:flex; align-items:center; gap:9px; color:var(--mist); font-size:0.84rem; text-decoration:none; transition:color 0.2s; }
+    .cl i { color:var(--gold); }
+    .cl:hover { color:var(--cream); }
+
+    /* ─── FOOTER ─── */
+    footer { border-top:1px solid var(--wire); padding:36px 64px; display:flex; align-items:center; justify-content:space-between; }
+    .fb { font-family:'Bebas Neue',sans-serif; font-size:1.1rem; letter-spacing:0.1em; color:var(--cream); }
+    .fc { font-size:0.75rem; color:var(--mist); }
+    .fd { font-size:0.75rem; color:var(--mist); display:flex; align-items:center; gap:7px; }
+    .fd strong { color:var(--gold); }
+    .fd i { color:var(--gold); font-size:0.65rem; animation:hb 1.5s ease-in-out infinite; }
+    @keyframes hb { 0%,100%{transform:scale(1);} 50%{transform:scale(1.35);} }
+
+    /* ─── REVEAL ─── */
+    .rev { opacity:0; transform:translateY(36px); transition:opacity 0.9s cubic-bezier(0.16,1,0.3,1),transform 0.9s cubic-bezier(0.16,1,0.3,1); }
+    .rev.on { opacity:1; transform:translateY(0); }
+    .rev-l { opacity:0; transform:translateX(-36px); transition:opacity 0.9s ease,transform 0.9s ease; }
+    .rev-l.on { opacity:1; transform:translateX(0); }
+    .rev-r { opacity:0; transform:translateX(36px); transition:opacity 0.9s ease,transform 0.9s ease; }
+    .rev-r.on { opacity:1; transform:translateX(0); }
+    .d1{transition-delay:.1s;}.d2{transition-delay:.2s;}.d3{transition-delay:.3s;}.d4{transition-delay:.4s;}.d5{transition-delay:.5s;}
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="/" class="brand">
+    <div class="brand-icon"><i class="bi bi-people-fill"></i></div>
+    <span class="brand-name">Guest Labour Hiring</span>
+  </a>
+  <div class="nav-links">
+    <a href="#about">About</a>
+    <a href="#features">Features</a>
+    <a href="#roles">Roles</a>
+    <a href="#contact">Contact</a>
+    <a href="/login/" class="nav-login">Login →</a>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero" id="home">
+  <div class="grid-bg"></div>
+  <canvas id="particles-canvas"></canvas>
+  <div class="glow-line top"></div>
+  <div class="glow-line bot"></div>
+
+  <div class="hero-inner">
+    <div class="hero-pill">
+      <div class="pill-dot"></div>
+      IGNOU BCA Final Year Project · 2024 · Designed by Adrsh
+    </div>
+
+    <h1 class="hero-title">
+      <span class="ht-row"><span class="ht-inner">GUEST</span></span>
+      <span class="ht-row"><span class="ht-inner">LABOUR</span></span>
+      <span class="ht-row"><span class="ht-inner">HIRING</span></span>
+    </h1>
+
+    <p class="hero-sub">
+      A centralized government-grade platform connecting <b>migrant workers</b>, employers, and police authorities — with complete transparency, security &amp; accountability.
+    </p>
+
+    <div class="hero-btns">
+      <a href="/login/" class="btn-primary"><i class="bi bi-box-arrow-in-right"></i> Enter System</a>
+      <a href="#about" class="btn-secondary"><i class="bi bi-arrow-down"></i> Explore</a>
+    </div>
+
+    <div class="hero-statbar">
+      <div class="hstat"><span class="hstat-n">04</span><div class="hstat-l">User Roles</div></div>
+      <div class="hstat"><span class="hstat-n">08</span><div class="hstat-l">DB Tables</div></div>
+      <div class="hstat"><span class="hstat-n">NOC</span><div class="hstat-l">Police Verified</div></div>
+      <div class="hstat"><span class="hstat-n">100%</span><div class="hstat-l">Secure Access</div></div>
+    </div>
+  </div>
+
+  <div class="scroll-mouse">
+    <div class="s-box"><div class="s-dot"></div></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee">
+  <div class="m-track">
+    <div class="m-item hi">Guest Labour Hiring</div><div class="m-dot"></div>
+    <div class="m-item">Worker Registration</div><div class="m-dot"></div>
+    <div class="m-item">Police Verification</div><div class="m-dot"></div>
+    <div class="m-item">NOC Issuance</div><div class="m-dot"></div>
+    <div class="m-item hi">Designed by Adrsh</div><div class="m-dot"></div>
+    <div class="m-item">Job Placement</div><div class="m-dot"></div>
+    <div class="m-item">Insurance Management</div><div class="m-dot"></div>
+    <div class="m-item">IGNOU BCA Project</div><div class="m-dot"></div>
+    <div class="m-item hi">2024</div><div class="m-dot"></div>
+    <div class="m-item">Role-Based Access</div><div class="m-dot"></div>
+    <div class="m-item">Secure Database</div><div class="m-dot"></div>
+    <div class="m-item hi">Guest Labour Hiring</div><div class="m-dot"></div>
+    <div class="m-item">Worker Registration</div><div class="m-dot"></div>
+    <div class="m-item">Police Verification</div><div class="m-dot"></div>
+    <div class="m-item">NOC Issuance</div><div class="m-dot"></div>
+    <div class="m-item hi">Designed by Adrsh</div><div class="m-dot"></div>
+    <div class="m-item">Job Placement</div><div class="m-dot"></div>
+    <div class="m-item">Insurance Management</div><div class="m-dot"></div>
+    <div class="m-item">IGNOU BCA Project</div><div class="m-dot"></div>
+    <div class="m-item hi">2024</div><div class="m-dot"></div>
+    <div class="m-item">Role-Based Access</div><div class="m-dot"></div>
+    <div class="m-item">Secure Database</div><div class="m-dot"></div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="about-l">
+    <p class="sec-tag rev">01 · About</p>
+    <h2 class="sec-h rev d1">The System<br><em>India</em> Needs</h2>
+    <p class="sec-p rev d2">Millions of <b>migrant workers</b> move across India every year without proper documentation or employer verification. This platform bridges that gap.</p>
+    <p class="sec-p rev d3">Built as an <b>IGNOU BCA Final Year Project</b>, it uses Django with role-based authentication ensuring each stakeholder only sees what they need.</p>
+    <div class="credit-box rev d4"><i class="bi bi-stars"></i> Designed &amp; Developed by <strong>&nbsp;Adrsh</strong></div>
+  </div>
+  <div class="about-r rev-r">
+    <div class="mosaic">
+      <div class="mc tall"><img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=500&q=75" alt=""><div class="mc-lbl">Labour Force</div></div>
+      <div class="mc"><img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=500&q=75" alt=""><div class="mc-lbl">Documentation</div></div>
+      <div class="mc"><img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=500&q=75" alt=""><div class="mc-lbl">Verification</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-row">
+  <div class="sc rev"><span class="sn" data-count="4">0</span><div class="sl">User Roles</div></div>
+  <div class="sc rev d1"><span class="sn" data-count="8">0</span><div class="sl">Database Tables</div></div>
+  <div class="sc rev d2"><span class="sn">NOC</span><div class="sl">Police Verified</div></div>
+  <div class="sc rev d3"><span class="sn">100%</span><div class="sl">Secure Access</div></div>
+</div>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="feat-head rev">
+    <div class="feat-title">Key<br><span>Features</span></div>
+    <p class="feat-desc">Every module built with precision — NOC issuance, job management, worker tracking and more.</p>
+  </div>
+  <div class="feat-grid">
+    <div class="fi rev"><div class="fi-n">01</div><i class="bi bi-shield-lock fi-icon"></i><div class="fi-name">Police Verification</div><p class="fi-text">Workers are verified by police who issue or reject No Objection Certificates before employment.</p></div>
+    <div class="fi rev d1"><div class="fi-n">02</div><i class="bi bi-briefcase fi-icon"></i><div class="fi-name">Job Management</div><p class="fi-text">Employers post vacancies. Workers apply and track applications in real-time.</p></div>
+    <div class="fi rev d2"><div class="fi-n">03</div><i class="bi bi-person-badge fi-icon"></i><div class="fi-name">Worker Registry</div><p class="fi-text">Complete migrant database with Aadhaar, DOB, languages, and employment history.</p></div>
+    <div class="fi rev d3"><div class="fi-n">04</div><i class="bi bi-lock fi-icon"></i><div class="fi-name">Role-Based Security</div><p class="fi-text">4 separate dashboards. Only Admin creates accounts. CSRF protection throughout.</p></div>
+    <div class="fi rev d4"><div class="fi-n">05</div><i class="bi bi-shield-check fi-icon"></i><div class="fi-name">Insurance Tracking</div><p class="fi-text">Admin manages worker insurance — type, coverage name, and payout amounts.</p></div>
+    <div class="fi rev d5"><div class="fi-n">06</div><i class="bi bi-database fi-icon"></i><div class="fi-name">MySQL / SQLite DB</div><p class="fi-text">Works with SQLite out of the box. One config line switches to MySQL Workbench.</p></div>
+  </div>
+</section>
+
+<!-- IMAGE SCROLL STRIP -->
+<div class="img-scr">
+  <div class="img-scr-lbl">Gallery — Labour · Work · Verification · Employment</div>
+  <div class="img-track">
+    <div class="img-c"><img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=600&q=70" alt=""><div class="img-cap">Construction</div></div>
+    <div class="img-c"><img src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=600&q=70" alt=""><div class="img-cap">Manufacturing</div></div>
+    <div class="img-c"><img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=600&q=70" alt=""><div class="img-cap">Documentation</div></div>
+    <div class="img-c"><img src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=600&q=70" alt=""><div class="img-cap">Workforce</div></div>
+    <div class="img-c"><img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&q=70" alt=""><div class="img-cap">Verification</div></div>
+    <div class="img-c"><img src="https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=600&q=70" alt=""><div class="img-cap">Infrastructure</div></div>
+    <div class="img-c"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=70" alt=""><div class="img-cap">Employment</div></div>
+    <div class="img-c"><img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=600&q=70" alt=""><div class="img-cap">Construction</div></div>
+    <div class="img-c"><img src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=600&q=70" alt=""><div class="img-cap">Manufacturing</div></div>
+    <div class="img-c"><img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=600&q=70" alt=""><div class="img-cap">Documentation</div></div>
+    <div class="img-c"><img src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=600&q=70" alt=""><div class="img-cap">Workforce</div></div>
+    <div class="img-c"><img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&q=70" alt=""><div class="img-cap">Verification</div></div>
+    <div class="img-c"><img src="https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=600&q=70" alt=""><div class="img-cap">Infrastructure</div></div>
+    <div class="img-c"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=70" alt=""><div class="img-cap">Employment</div></div>
+  </div>
+</div>
+
+<!-- ROLES -->
+<section class="roles" id="roles">
+  <div class="r-tag rev">03 · Stakeholders</div>
+  <div class="r-head">
+    <div class="r-plain rev">Four</div>
+    <div class="r-out rev d1">Distinct</div>
+    <div class="r-gold rev d2">Roles</div>
+  </div>
+  <div class="r-grid">
+    <div class="rc rev"><div class="rc-bg">01</div><div class="rc-icon"><i class="bi bi-person-gear"></i></div><div class="rc-name">Admin</div><p class="rc-desc">Full system access. The only role that can create accounts for workers, contractors, and police.</p><div class="rc-tags"><span class="rt">Add Workers</span><span class="rt">Contractors</span><span class="rt">Insurance</span><span class="rt">View All</span></div></div>
+    <div class="rc rev d1"><div class="rc-bg">02</div><div class="rc-icon"><i class="bi bi-shield-lock"></i></div><div class="rc-name">Police</div><p class="rc-desc">Reviews worker profiles and background verification. Issues or rejects NOC with official remarks.</p><div class="rc-tags"><span class="rt">View Workers</span><span class="rt">Approve NOC</span><span class="rt">Reject NOC</span><span class="rt">Remarks</span></div></div>
+    <div class="rc rev d2"><div class="rc-bg">03</div><div class="rc-icon"><i class="bi bi-building"></i></div><div class="rc-name">Employer</div><p class="rc-desc">Posts job vacancies and reviews worker applications. Can verify NOC status before accepting any worker.</p><div class="rc-tags"><span class="rt">Post Jobs</span><span class="rt">Applications</span><span class="rt">Accept/Reject</span><span class="rt">View NOC</span></div></div>
+    <div class="rc rev d3"><div class="rc-bg">04</div><div class="rc-icon"><i class="bi bi-person-badge"></i></div><div class="rc-name">Worker</div><p class="rc-desc">Browses jobs, applies, tracks applications. Views profile, NOC status, and can submit feedback.</p><div class="rc-tags"><span class="rt">Profile</span><span class="rt">NOC Status</span><span class="rt">Apply Jobs</span><span class="rt">Feedback</span></div></div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta" id="contact">
+  <div class="cta-glow"></div>
+  <div class="cta-ring cr1"></div>
+  <div class="cta-ring cr2"></div>
+  <div class="cta-ring cr3"></div>
+  <div class="cta-kicker rev"><span></span>Ready to Begin<span></span></div>
+  <h2 class="cta-h rev d1">Enter the<br><span class="g">System</span></h2>
+  <p class="cta-p rev d2">Login with your credentials to access your role dashboard. Contact the administrator to create an account.</p>
+  <div class="cta-btns rev d3">
+    <a href="/login/" class="btn-primary"><i class="bi bi-box-arrow-in-right"></i> Login Now</a>
+    <a href="mailto:admin@guestlabour.gov.in" class="btn-secondary"><i class="bi bi-envelope"></i> Contact Admin</a>
+  </div>
+  <div class="cta-contacts rev d4">
+    <a href="#" class="cl"><i class="bi bi-envelope"></i> admin@guestlabour.gov.in</a>
+    <a href="#" class="cl"><i class="bi bi-telephone"></i> 1800-XXX-XXXX</a>
+    <a href="#" class="cl"><i class="bi bi-geo-alt"></i> New Delhi, India</a>
+    <a href="#" class="cl"><i class="bi bi-clock"></i> Mon–Sat, 9AM–6PM</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div style="display:flex;align-items:center;gap:18px;">
+    <span class="fb">GLH SYSTEM</span>
+    <span style="width:1px;height:16px;background:var(--wire)"></span>
+    <span class="fc">© 2024 Guest Labour Hiring System · IGNOU BCA Project</span>
+  </div>
+  <div class="fd"><i class="bi bi-stars"></i> Designed &amp; Built by <strong>&nbsp;Adrsh</strong>&nbsp;<i class="bi bi-heart-fill"></i></div>
+</footer>
+
+<script>
+// ── Canvas particles ──
+const canvas = document.getElementById('particles-canvas');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
+
+const particles = Array.from({length:60}, () => ({
+  x: Math.random() * canvas.width,
+  y: Math.random() * canvas.height,
+  r: Math.random() * 1.5 + 0.3,
+  dx: (Math.random() - 0.5) * 0.3,
+  dy: -Math.random() * 0.5 - 0.1,
+  o: Math.random() * 0.5 + 0.1
+}));
+
+function drawParticles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach(p => {
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(212,168,75,${p.o})`;
+    ctx.fill();
+    p.x += p.dx; p.y += p.dy;
+    if (p.y < -5) { p.y = canvas.height + 5; p.x = Math.random() * canvas.width; }
+    if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
+  });
+  requestAnimationFrame(drawParticles);
+}
+drawParticles();
+
+// ── Navbar scroll ──
+window.addEventListener('scroll', () => {
+  const nav = document.querySelector('nav');
+  nav.style.background = window.scrollY > 60 ? 'rgba(3,5,13,0.97)' : 'rgba(3,5,13,0.75)';
+  nav.style.borderBottomColor = window.scrollY > 60 ? 'rgba(212,168,75,0.25)' : 'rgba(212,168,75,0.2)';
+});
+
+// ── Scroll reveal ──
+const revEls = document.querySelectorAll('.rev,.rev-l,.rev-r');
+const ro = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting){e.target.classList.add('on');ro.unobserve(e.target);} }), {threshold:0.1});
+revEls.forEach(el => ro.observe(el));
+
+// ── Counter animation ──
+document.querySelectorAll('.sn[data-count]').forEach(el => {
+  const co = new IntersectionObserver(([e]) => {
+    if(e.isIntersecting){
+      const end = parseInt(el.dataset.count); let cur=0;
+      const t = setInterval(() => { cur=Math.min(cur+1,end); el.textContent=cur; if(cur>=end)clearInterval(t); },120);
+      co.unobserve(el);
+    }
+  },{threshold:0.5});
+  co.observe(el);
+});
+
+// ── Hero parallax ──
+window.addEventListener('scroll', () => {
+  const sy = window.scrollY;
+  const grid = document.querySelector('.grid-bg');
+  if(grid) grid.style.transform = `translateY(${sy*0.25}px)`;
+});
+</script>
+</body>
+</html>

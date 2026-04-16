@@ -1,0 +1,48 @@
+{% extends "hiring/base.html" %}
+{% block title %}Issue NOC{% endblock %}
+{% block page_title %}<i class="bi bi-shield-check me-2"></i>Issue NOC{% endblock %}
+{% block sidebar %}
+<a href="{% url 'police_dashboard' %}"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a>
+<a href="{% url 'police_view_workers' %}" class="active"><i class="bi bi-people me-2"></i>View Workers</a>
+<a href="{% url 'police_view_nocs' %}"><i class="bi bi-file-earmark-check me-2"></i>Issued NOCs</a>
+{% endblock %}
+{% block content %}
+<div class="row g-4">
+  <div class="col-md-5">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body p-4">
+        <h6 class="fw-bold mb-3">Worker Details</h6>
+        <table class="table table-sm table-borderless">
+          <tr><th>Name</th><td>{{ worker.name }}</td></tr>
+          <tr><th>Phone</th><td>{{ worker.phone }}</td></tr>
+          <tr><th>Email</th><td>{{ worker.email }}</td></tr>
+          <tr><th>Aadhaar</th><td>{{ worker.aadhaar_number }}</td></tr>
+          <tr><th>DOB</th><td>{{ worker.date_of_birth }}</td></tr>
+          <tr><th>Gender</th><td>{{ worker.gender }}</td></tr>
+          <tr><th>Languages</th><td>{{ worker.languages_known }}</td></tr>
+          <tr><th>Address</th><td>{{ worker.address }}</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-5">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body p-4">
+        <h6 class="fw-bold mb-3">
+          Current NOC Status:
+          <span class="badge badge-{{ noc.status|lower }} ms-2">{{ noc.status }}</span>
+        </h6>
+        <form method="post">{% csrf_token %}
+          <div class="mb-3"><label class="form-label">Remarks</label>{{ form.remarks }}</div>
+          <button type="submit" name="action" value="approve" class="btn btn-success me-2">
+            <i class="bi bi-check-circle me-1"></i>Approve NOC
+          </button>
+          <button type="submit" name="action" value="reject" class="btn btn-danger">
+            <i class="bi bi-x-circle me-1"></i>Reject NOC
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

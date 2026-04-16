@@ -1,0 +1,24 @@
+{% extends "hiring/base.html" %}
+{% block title %}My Applications{% endblock %}
+{% block page_title %}My Applications{% endblock %}
+{% block sidebar %}
+<a href="{% url 'worker_dashboard' %}"><i class="bi bi-speedometer2"></i> Overview</a>
+<div class="nav-label">My Account</div>
+<a href="{% url 'worker_profile' %}"><i class="bi bi-person"></i> My Profile</a>
+<a href="{% url 'worker_noc_status' %}"><i class="bi bi-shield-check"></i> NOC Status</a>
+<div class="nav-label">Jobs</div>
+<a href="{% url 'worker_view_jobs' %}"><i class="bi bi-briefcase"></i> Browse Jobs</a>
+<a href="{% url 'worker_application_status' %}" class="active"><i class="bi bi-list-check"></i> My Applications</a>
+<div class="nav-label">Other</div>
+<a href="{% url 'worker_feedback' %}"><i class="bi bi-chat-dots"></i> Feedback</a>
+{% endblock %}
+{% block content %}
+<div class="page-header fade-up"><div><h1>My Applications</h1><p>Track the status of your job applications.</p></div></div>
+<div class="card fade-up"><div class="table-wrap"><table>
+<thead><tr><th>ID</th><th>Job</th><th>Contractor</th><th>Salary</th><th>Status</th></tr></thead>
+<tbody>
+{% for a in applications %}
+<tr><td>#{{ a.rqid }}</td><td style="color:var(--text);font-weight:500;">{{ a.job.job_name }}</td><td>{{ a.job.contractor.name }}</td><td style="color:var(--accent3);">₹{{ a.job.salary }}</td><td><span class="badge badge-{{ a.status|lower }}">{{ a.status }}</span></td></tr>
+{% empty %}<tr><td colspan="5"><div class="empty-state"><i class="bi bi-list-check"></i><p>No applications yet. <a href="{% url 'worker_view_jobs' %}" style="color:var(--accent);">Browse jobs →</a></p></div></td></tr>{% endfor %}
+</tbody></table></div></div>
+{% endblock %}
